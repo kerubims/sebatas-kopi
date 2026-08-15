@@ -78,6 +78,15 @@
                         <span>Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
                     </div>
                 </div>
+                
+                <!-- Table Number Input -->
+                <div class="mt-6 border-t border-gray-200 pt-4">
+                    <label for="table_number" class="block text-sm font-medium text-gray-700 mb-1 font-bold">Nomor Meja <span class="text-red-500">*</span></label>
+                    <input type="text" id="table_number" name="table_number" required 
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-[#5C4033] focus:ring focus:ring-[#5C4033] focus:ring-opacity-50" 
+                           placeholder="Contoh: 12">
+                    <p class="text-xs text-gray-500 mt-1">Silakan isi nomor meja tempat Anda duduk.</p>
+                </div>
             </div>
 
             <!-- Action Buttons -->
@@ -116,6 +125,14 @@
             }
 
             // SKENARIO B: Token belum ada (Order Baru)
+            
+            const tableNumber = document.getElementById('table_number').value.trim();
+            if (!tableNumber) {
+                alert('❌ Silakan isi Nomor Meja terlebih dahulu.');
+                document.getElementById('table_number').focus();
+                return;
+            }
+
             btn.disabled = true;
             btn.innerText = 'Memproses Order...';
 
@@ -127,7 +144,10 @@
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
+                    },
+                    body: JSON.stringify({
+                        table_number: tableNumber
+                    })
                 });
 
                 const data = await response.json();

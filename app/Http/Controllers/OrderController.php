@@ -162,11 +162,15 @@ class OrderController extends Controller
     /**
      * TAHAP 3: Proses Final (Simpan DB & Minta Token)
      */
-    public function processPayment()
+    public function processPayment(Request $request)
     {
         try {
+            $request->validate([
+                'table_number' => 'required|string|max:50',
+            ]);
+
             $sessionData = session('checkout_session');
-            $user = Auth::user();
+            $tableNumber = $request->table_number;
 
             if (!$sessionData) {
                 return response()->json(['success' => false, 'message' => 'Session expired'], 400);
@@ -174,11 +178,11 @@ class OrderController extends Controller
 
             // 1. Simpan ke Database (Panggil Service)
             if ($sessionData['type'] === 'direct') {
-                $order = $this->orderService->createOrderFromItem($user->id, $sessionData['data']);
+                $order = $this->orderService->createOrderFromItem($tableNumber, $sessionData['data']);
             } else {
                 // Ambil data cart terbaru dari service (untuk memastikan stok/harga valid)
                 // Atau gunakan snapshot sessionData['data'] jika ingin harga terkunci
-                $order = $this->orderService->createOrderFromCart($user->id, $sessionData['data']);
+                $order = $this->orderService->createOrderFromCart($tableNumber, $sessionData['data']);
                 
                 // Hapus Cart HANYA jika order berhasil dibuat
                 $this->cartService->clearCart();
@@ -194,11 +198,20 @@ class OrderController extends Controller
             // 3. Hapus session checkout agar tidak bisa di-refresh
             session()->forget('checkout_session');
 
+            // 4. Save to Cookie for guest history
+            $guestOrders = json_decode($request->cookie('guest_orders', '[]'), true);
+            if (!is_array($guestOrders)) {
+                $guestOrders = [];
+            }
+            $guestOrders[] = $order->order_number;
+            // 30 days = 60 minutes * 24 hours * 30 days = 43200 minutes
+            $cookie = cookie('guest_orders', json_encode(array_unique($guestOrders)), 43200);
+
             return response()->json([
                 'success' => true,
                 'snap_token' => $snapToken,
                 'order_number' => $order->order_number
-            ]);
+            ])->cookie($cookie);
 
         } catch (\Exception $e) {
             Log::error('Payment Process Error', ['msg' => $e->getMessage()]);
@@ -336,10 +349,8 @@ class OrderController extends Controller
     }
     public function paymentSuccess($orderNumber)
     {
-        // Pastikan order milik user yang sedang login agar tidak bisa diintip orang lain
-        $order = Order::where('order_number', $orderNumber)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        // Temukan order tanpa mengecek user_id
+        $order = Order::where('order_number', $orderNumber)->firstOrFail();
 
         return view('user.payment-success', compact('order'));
     }

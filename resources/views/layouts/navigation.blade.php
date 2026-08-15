@@ -10,9 +10,7 @@
 
         {{-- Desktop Navigation --}}
         <div class="hidden md:flex items-center space-x-8 text-gray-200 font-medium text-lg tracking-wide">
-            
-            @auth
-            {{-- Menu untuk user yang sudah login --}}
+            {{-- Menu Navigation --}}
             <a href="{{ route('home') }}" class="hover:text-white transition duration-300">Home</a>
             <a href="{{ route('menu') }}" class="hover:text-white transition duration-300">Menu</a>
             <a href="{{ route('about') }}" class="hover:text-white transition duration-300">About</a>
@@ -20,20 +18,6 @@
             <a href="{{ route('cart') }}" class="border border-[#C5A880] text-white px-6 py-1.5 rounded-full hover:bg-[#532E1C] hover:text-white transition duration-300 text-sm tracking-wider">
                 Order
             </a>
-            <form method="POST" action="{{ route('logout') }}" class="m-0 p-0 flex items-center">
-                @csrf
-                <button type="submit" class="hover:text-red-400 transition duration-300">
-                    Logout
-                </button>
-            </form>
-            @else
-                {{-- Menu untuk guest (belum login) - semua diarahkan ke login --}}
-                <a href="{{ route('login') }}" class="hover:text-white transition duration-300">Home</a>
-                <a href="{{ route('login') }}" class="hover:text-white transition duration-300">Menu</a>
-                <a href="{{ route('login') }}" class="hover:text-white transition duration-300">About</a>
-                <a href="{{ route('login') }}" class="hover:text-white transition duration-300">History</a>                
-                <a href="{{ route('login') }}" class="border border-[#C5A880] text-white px-6 py-1.5 rounded-full hover:bg-[#532E1C] hover:text-white transition duration-300 text-sm tracking-wider">Order</a>
-            @endauth
         </div>
 
         {{-- Mobile Menu Button --}}
@@ -60,24 +44,9 @@
         
         <a href="{{ url('/') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">Home</a>
         
-        @auth
-            {{-- Mobile Menu untuk user yang sudah login --}}
-            <a href="{{ route('dashboard') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">Menu</a>
-            <a href="{{ url('/about') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">About</a>
-            <a href="{{ url('/history') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">History</a>
-            <a href="{{ route('dashboard') }}" class="block text-amber-500 font-bold py-2 transition duration-300">Order Now</a>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="block w-full text-center text-white hover:text-red-500 py-2 transition duration-300">
-                    Logout
-                </button>
-            </form>
-        @else
-            {{-- Mobile Menu untuk guest (belum login) - semua diarahkan ke login --}}
-            <a href="{{ route('login') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">Menu</a>
-            <a href="{{ route('login') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">About</a>
-            <a href="{{ route('login') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">History</a>
-            <a href="{{ route('login') }}" class="block text-amber-500 font-bold py-2 transition duration-300">Order Now</a>
-        @endauth
+        <a href="{{ url('/menu') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">Menu</a>
+        <a href="{{ url('/about') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">About</a>
+        <a href="{{ url('/history') }}" class="block text-white hover:text-amber-500 py-2 transition duration-300">History</a>
+        <a href="{{ url('/cart') }}" class="block text-amber-500 font-bold py-2 transition duration-300">Order Now</a>
     </div>
 </nav>

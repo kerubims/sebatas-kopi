@@ -48,11 +48,17 @@ class DatabaseSeeder extends Seeder
 
         // 3. Buat Extras / Topping
         Extra::insert([
-            ['name' => 'Extra Shot', 'price' => 5000, 'is_available' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Oat Milk', 'price' => 8000, 'is_available' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Caramel Sauce', 'price' => 3000, 'is_available' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Vanilla Syrup', 'price' => 3000, 'is_available' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Cream Cheese', 'price' => 5000, 'is_available' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Extra Shot', 'price' => 5000, 'is_available' => true, 'category' => 'Coffee', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Oat Milk', 'price' => 8000, 'is_available' => true, 'category' => 'Coffee', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Caramel Sauce', 'price' => 3000, 'is_available' => true, 'category' => 'Coffee', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Vanilla Syrup', 'price' => 3000, 'is_available' => true, 'category' => 'Coffee', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Cream Cheese', 'price' => 5000, 'is_available' => true, 'category' => 'Coffee', 'created_at' => now(), 'updated_at' => now()],
+            
+            // Snack Toppings
+            ['name' => 'Saus Sambal', 'price' => 0, 'is_available' => true, 'category' => 'Snack', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Saus Tomat', 'price' => 0, 'is_available' => true, 'category' => 'Snack', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Mayones', 'price' => 3000, 'is_available' => true, 'category' => 'Snack', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Bumbu Pedas', 'price' => 2000, 'is_available' => true, 'category' => 'Snack', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // 4. Data Master Menu

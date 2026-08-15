@@ -31,15 +31,17 @@ class HomeController extends Controller
     /**
      * Display the history page
      */
-    public function history()
+    public function history(Request $request)
     {
-        $orders = auth()->user()
-            ? auth()->user()->orders()
-                ->with(['orderItems.product', 'orderItems.extras'])
-                ->where('status', 'paid')                 
-                ->orderBy('created_at', 'desc')
-                ->get()
-            : collect();
+        $guestOrders = json_decode($request->cookie('guest_orders', '[]'), true);
+        if (!is_array($guestOrders)) {
+            $guestOrders = [];
+        }
+
+        $orders = \App\Models\Order::with(['orderItems.product', 'orderItems.extras'])
+            ->whereIn('order_number', $guestOrders)
+            ->orderBy('created_at', 'desc')
+            ->get();
         
         return view('user.history', compact('orders'));
     }

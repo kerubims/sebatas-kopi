@@ -14,9 +14,9 @@ class OrderService
     /**
      * Create order from cart items
      */
-    public function createOrderFromCart(int $userId, array $cartItems): Order
+    public function createOrderFromCart(string $tableNumber, array $cartItems): Order
     {
-        return DB::transaction(function () use ($userId, $cartItems) {
+        return DB::transaction(function () use ($tableNumber, $cartItems) {
             // Calculate total
             $totalPrice = 0;
             foreach ($cartItems as $item) {
@@ -25,7 +25,7 @@ class OrderService
 
             // Create order
             $order = Order::create([
-                'user_id' => $userId,
+                'table_number' => $tableNumber,
                 'order_number' => Order::generateOrderNumber(),
                 'total_price' => $totalPrice,
                 'status' => 'pending',
@@ -62,9 +62,9 @@ class OrderService
     /**
      * Create order from single item (Buy Now)
      */
-    public function createOrderFromItem(int $userId, array $itemData): Order
+    public function createOrderFromItem(string $tableNumber, array $itemData): Order
     {
-        return DB::transaction(function () use ($userId, $itemData) {
+        return DB::transaction(function () use ($tableNumber, $itemData) {
             // Calculate total
             $extrasTotal = 0;
             if (!empty($itemData['extras'])) {
@@ -77,7 +77,7 @@ class OrderService
 
             // Create order
             $order = Order::create([
-                'user_id' => $userId,
+                'table_number' => $tableNumber,
                 'order_number' => Order::generateOrderNumber(),
                 'total_price' => $subtotal,
                 'status' => 'pending',
@@ -139,9 +139,9 @@ class OrderService
                     'gross_amount' => $calculatedGrossAmount, // Gunakan hasil hitungan ulang
                 ],
                 'customer_details' => [
-                    'first_name' => $order->user->name,
-                    'email' => $order->user->email,
-                    'phone' => $order->user->phone ?? '', // Tambahkan phone jika ada
+                    'first_name' => 'Guest Meja ' . $order->table_number,
+                    'email' => 'guest@sebataskopi.com',
+                    'phone' => '0800000000', // Dummy phone number
                 ],
                 'item_details' => $itemDetails,
             ];

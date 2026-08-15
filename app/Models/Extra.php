@@ -10,6 +10,7 @@ class Extra extends Model
         'name',
         'price',
         'is_available',
+        'category',
     ];
 
     protected function casts(): array

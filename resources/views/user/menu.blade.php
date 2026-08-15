@@ -128,16 +128,16 @@
                                     </template>
 
                                     <!-- Extras Section -->
-                                    <div class="mb-4 sm:mb-6">
+                                    <div class="mb-4 sm:mb-6" x-show="filteredExtras.length > 0">
                                         <p class="font-semibold text-gray-700 mb-2 text-sm sm:text-base">Extra:</p>
                                         <div class="space-y-1.5 sm:space-y-2 max-h-32 sm:max-h-none overflow-y-auto">
-                                            <template x-for="extra in extras" :key="extra.id">
+                                            <template x-for="extra in filteredExtras" :key="extra.id">
                                                 <label class="flex items-center space-x-2 cursor-pointer">
                                                     <input type="checkbox" 
                                                            :value="extra.id"
                                                            @change="toggleExtra(extra)"
                                                            class="w-4 h-4 rounded border-gray-300 text-[#5C4033] focus:ring-[#5C4033]">
-                                                    <span class="text-gray-700 text-sm sm:text-base" x-text="extra.name + ' — ' + (extra.price / 1000) + 'K'"></span>
+                                                    <span class="text-gray-700 text-sm sm:text-base" x-text="extra.name + (extra.price > 0 ? ' — ' + (extra.price / 1000) + 'K' : ' — Free')"></span>
                                                 </label>
                                             </template>
                                         </div>
@@ -196,6 +196,24 @@
                         const matchesSearch = product.name.toLowerCase().includes(this.search.toLowerCase());
                         const matchesCategory = this.activeCategory === 'all' || product.category_id == this.activeCategory;
                         return matchesSearch && matchesCategory;
+                    });
+                },
+
+                get filteredExtras() {
+                    if (!this.selectedProduct) return [];
+                    
+                    const productCategoryName = this.getCategoryName(this.selectedProduct.category_id).toLowerCase();
+                    
+                    let targetCategory = '';
+                    if (productCategoryName.includes('coffee') || productCategoryName.includes('minuman')) {
+                        targetCategory = 'coffee';
+                    } else if (productCategoryName.includes('snack') || productCategoryName.includes('cemilan') || productCategoryName.includes('makanan')) {
+                        targetCategory = 'snack';
+                    }
+
+                    return this.extras.filter(extra => {
+                        if (!targetCategory) return true; // Show all if we can't determine
+                        return extra.category && extra.category.toLowerCase() === targetCategory;
                     });
                 },
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id',
+        'table_number',
         'order_number',
         'total_price',
         'status',
@@ -20,14 +20,6 @@ class Order extends Model
         return [
             'total_price' => 'decimal:2',
         ];
-    }
-
-    /**
-     * Get the user that owns the order
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 
     /**
