@@ -26,6 +26,18 @@
                 @enderror
             </div>
 
+            <div>
+                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select name="category" id="category" required
+                       class="w-full rounded-lg border-gray-300 focus:border-[#5C4033] focus:ring focus:ring-[#5C4033] focus:ring-opacity-50">
+                    <option value="coffee" {{ old('category', $extra->category) == 'coffee' ? 'selected' : '' }}>Coffee</option>
+                    <option value="snack" {{ old('category', $extra->category) == 'snack' ? 'selected' : '' }}>Snack</option>
+                </select>
+                @error('category')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             <div class="flex items-center">
                 <input type="checkbox" name="is_available" id="is_available" value="1" {{ old('is_available', $extra->is_available) ? 'checked' : '' }}
                        class="rounded border-gray-300 text-[#5C4033] shadow-sm focus:border-[#5C4033] focus:ring focus:ring-[#5C4033] focus:ring-opacity-50">

@@ -66,15 +66,9 @@
                 
                 {{-- CTA Button menggunakan font Joan--}}
                 <div class="flex flex-col sm:flex-row gap-4  justify-center items-center" style="font-family: 'Joan', serif;">
-                    @auth
                         <a href="{{ route('home') }}" class="px-10 py-2 text-[22px] bg-[#532E1C] text-white rounded-full hover:bg-[#532E1C] transition-all duration-300 inline-flex items-center gap-2" style="font-family: 'Joan', serif;">
                             <span class="">Mulai Pesan</span>                            
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="px-10 py-2 bg-[#532E1C] text-white rounded-full hover:bg-[#532E1C] transition-all duration-300 text-[22px] inline-flex items-center gap-2" style="font-family: 'Joan', serif;">
-                            <span>Start Now</span>
-                        </a>
-                    @endauth                    
+                        </a>                    
                 </div>
                 <!-- batas font Joan -->
             </div>

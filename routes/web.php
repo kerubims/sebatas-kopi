@@ -42,6 +42,13 @@ Route::middleware('auth')->group(function () {
 // Route::any('/payment/callback', [OrderController::class, 'callback'])->name('payment.callback');
 Route::get('/payment/simulate/{order_number}/{status}', [OrderController::class, 'simulateCallback'])->name('payment.simulate');
 
+Route::get('/admin', function () {
+    if (auth()->check() && auth()->user()->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('login');
+});
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);

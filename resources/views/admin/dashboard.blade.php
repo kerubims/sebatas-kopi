@@ -62,7 +62,7 @@
                     @forelse($recentOrders as $order)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-sm text-gray-800 font-medium">#{{ $order->order_number }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $order->user->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">Meja {{ $order->table_number }}</td>
                             <td class="px-6 py-4 text-sm text-gray-500">{{ $order->created_at->format('M d, Y') }}</td>
                             <td class="px-6 py-4 text-sm text-gray-800 font-bold">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
                             <td class="px-6 py-4">

@@ -29,18 +29,7 @@
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
-            <!-- Forgot Password & Register Link -->
-            <div class="flex items-center justify-between mb-6 text-sm">
-                @if (Route::has('password.request'))
-                    <a class="text-green-600 hover:text-green-800" href="{{ route('password.request') }}">
-                        Lupa kata sandi
-                    </a>
-                @endif
-                
-                <div class="text-gray-600">
-                    Belum punya akun? <a href="{{ route('register') }}" class="text-green-600 font-bold hover:underline">Daftar</a>
-                </div>
-            </div>
+
 
             <!-- Remember Me -->
             <div class="block mb-6">

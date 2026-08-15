@@ -3,7 +3,13 @@
         <div class="container mx-auto px-6 md:px-12 max-w-4xl">
             
             <!-- Page Title -->
-            <h1 class="text-4xl md:text-5xl font-serif text-gray-800 mb-12">History Pembelian</h1>
+            <h1 class="text-4xl md:text-5xl font-serif text-gray-800 mb-8">History Pembelian</h1>
+
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-8" role="alert">
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
 
             @if($orders->count() > 0)
                 <div class="space-y-6">
@@ -52,68 +58,176 @@
 
                             <!-- Order Details (Collapsible) -->
                             <div x-show="open" x-collapse class="mt-6 pt-6 border-t-2 border-gray-200">
-                                <div class="space-y-4">
-                                    @foreach($order->orderItems as $item)
-                                        <div class="flex items-start space-x-4">
-                                            <div class="w-16 h-16 flex-shrink-0">
-                                                <img src="{{ $item->product->image ? asset('storage/'.$item->product->image) : asset('images/salted-creme-brulee.png') }}" 
-                                                     alt="{{ $item->product->name }}" 
-                                                     class="w-full h-full object-contain">
+                                
+                                <!-- Progress Tracker Bento Card -->
+                                <div class="w-full bg-[#fff8f6] rounded-xl shadow-sm p-6 mb-6 border border-[#e8e1df] relative overflow-hidden">
+                                    <!-- Decorative background element -->
+                                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#e3beb8]/20 rounded-full blur-3xl"></div>
+                                    <h2 class="text-xl font-bold text-[#271310] mb-8 relative z-10">Status Pesanan</h2>
+                                    
+                                    @php
+                                        $isPending = $order->status === 'pending';
+                                        $isPaid = $order->status === 'paid';
+                                        $isProcessing = $order->status === 'processing';
+                                        $isCompleted = $order->status === 'completed';
+                                        
+                                        $step1Done = in_array($order->status, ['paid', 'processing', 'completed']);
+                                        $step2Active = in_array($order->status, ['paid', 'processing']);
+                                        $step2Done = $isCompleted;
+                                    @endphp
+
+                                    <div class="relative z-10">
+                                        <!-- Mobile Vertical Tracker (md:hidden) -->
+                                        <div class="md:hidden flex flex-col gap-6 relative">
+                                            <div class="absolute left-6 top-6 bottom-6 w-0.5 bg-[#e8e1df]"></div>
+                                            
+                                            <!-- Step 1: Paid -->
+                                            <div class="flex items-start gap-6 relative">
+                                                <div class="w-12 h-12 flex-shrink-0 rounded-full {{ $step1Done ? 'bg-[#e1e1c9] text-[#636451] shadow-sm' : ($isPending ? 'bg-[#271310] text-white shadow-md pulse-active' : 'bg-[#eee6e5] text-[#504442] border border-[#e8e1df]') }} flex items-center justify-center z-10 transition-colors">
+                                                    @if($step1Done)
+                                                        <span class="material-symbols-outlined fill">check_circle</span>
+                                                    @else
+                                                        <span class="material-symbols-outlined">payments</span>
+                                                    @endif
+                                                </div>
+                                                <div class="pt-1">
+                                                    <p class="text-sm font-semibold {{ $step1Done || $isPending ? 'text-[#1e1b1a]' : 'text-[#504442]' }}">
+                                                        {{ $step1Done ? 'Pembayaran Berhasil' : 'Menunggu Pembayaran' }}
+                                                    </p>
+                                                    <p class="text-xs font-medium text-[#504442]">
+                                                        {{ $step1Done ? 'Pembayaran diterima' : 'Selesaikan pembayaran Anda' }}
+                                                    </p>
+                                                    @if($isPending && $order->snap_token)
+                                                        <button onclick="payOrder('{{ $order->snap_token }}', '{{ $order->order_number }}')" class="mt-3 bg-[#5C4033] hover:bg-[#4a332a] text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors inline-flex items-center gap-2 shadow-sm relative z-20 cursor-pointer">
+                                                            <span class="material-symbols-outlined" style="font-size: 16px;">credit_card</span>
+                                                            Bayar Sekarang
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div class="flex-grow">
-                                                <h4 class="font-serif font-semibold text-lg text-gray-800">{{ $item->product->name }}</h4>
-                                                <p class="text-gray-600 text-sm">{{ $item->quantity }}x @ Rp {{ number_format($item->price, 0, ',', '.') }}</p>
-                                                
-                                                @if($item->extras && $item->extras->count() > 0)
-                                                    <div class="mt-2 text-sm text-gray-600">
-                                                        <span class="font-semibold">Extras:</span>
-                                                        <ul class="list-disc list-inside mt-1">
-                                                            @foreach($item->extras as $extra)
-                                                                <li>{{ $extra->name }} (+Rp {{ number_format($extra->pivot->price, 0, ',', '.') }})</li>
-                                                            @endforeach
-                                                        </ul>
+                                            
+                                            <!-- Step 2: Processing -->
+                                            <div class="flex items-start gap-6 relative">
+                                                <div class="w-12 h-12 flex-shrink-0 rounded-full {{ $step2Done ? 'bg-[#e1e1c9] text-[#636451] shadow-sm' : ($step2Active ? 'bg-[#271310] text-white shadow-md pulse-active' : 'bg-[#eee6e5] text-[#504442] border border-[#e8e1df]') }} flex items-center justify-center z-10 transition-colors">
+                                                    @if($step2Done)
+                                                        <span class="material-symbols-outlined fill">check_circle</span>
+                                                    @else
+                                                        <span class="material-symbols-outlined">coffee_maker</span>
+                                                    @endif
+                                                </div>
+                                                <div class="pt-1">
+                                                    <p class="text-sm font-semibold {{ $step2Done || $step2Active ? 'text-[#1e1b1a]' : 'text-[#504442]' }}">Proses Pembuatan</p>
+                                                    <p class="text-xs font-medium text-[#504442]">Barista sedang menyeduh</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 3: Completed -->
+                                            <div class="flex items-start gap-6 relative">
+                                                <div class="w-12 h-12 flex-shrink-0 rounded-full {{ $isCompleted ? 'bg-[#271310] text-white shadow-md pulse-active' : 'bg-[#eee6e5] text-[#504442] border border-[#e8e1df]' }} flex items-center justify-center z-10 transition-colors">
+                                                    <span class="material-symbols-outlined">celebration</span>
+                                                </div>
+                                                <div class="pt-1">
+                                                    <p class="text-sm font-semibold {{ $isCompleted ? 'text-[#1e1b1a]' : 'text-[#504442]' }}">Selesai</p>
+                                                    <p class="text-xs font-medium text-[#504442]">{{ $isCompleted ? 'Pesanan siap diantar' : 'Menunggu' }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Desktop Horizontal Tracker (hidden md:block) -->
+                                        <div class="hidden md:block relative w-full">
+                                            <div class="absolute top-6 left-[15%] right-[15%] h-0.5 bg-[#e8e1df] z-0"></div>
+                                            
+                                            <!-- Dynamic progress bar line -->
+                                            <div class="absolute top-6 left-[15%] h-0.5 bg-[#271310] z-0 transition-all duration-500" 
+                                                 style="width: {{ $isCompleted ? '70%' : ($step2Active ? '35%' : '0%') }}"></div>
+                                            
+                                            <div class="flex justify-between w-full relative z-10">
+                                                <!-- Step 1 -->
+                                                <div class="flex flex-col items-center w-1/3 text-center">
+                                                    <div class="w-12 h-12 rounded-full {{ $step1Done ? 'bg-[#e1e1c9] text-[#636451] shadow-sm hover:scale-105 transition-transform' : ($isPending ? 'bg-[#271310] text-white shadow-md pulse-active' : 'bg-[#eee6e5] text-[#504442] border border-[#e8e1df]') }} flex items-center justify-center mb-4 transition-colors">
+                                                        @if($step1Done)
+                                                            <span class="material-symbols-outlined fill">check_circle</span>
+                                                        @else
+                                                            <span class="material-symbols-outlined">payments</span>
+                                                        @endif
                                                     </div>
-                                                @endif
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="font-bold text-gray-800">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
+                                                    <p class="text-sm font-semibold {{ $step1Done || $isPending ? 'text-[#1e1b1a]' : 'text-[#504442]' }}">
+                                                        {{ $step1Done ? 'Pembayaran Berhasil' : 'Menunggu Pembayaran' }}
+                                                    </p>
+                                                    @if($isPending && $order->snap_token)
+                                                        <button onclick="payOrder('{{ $order->snap_token }}', '{{ $order->order_number }}')" class="mt-2 bg-[#5C4033] hover:bg-[#4a332a] text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors inline-flex items-center gap-1 shadow-sm relative z-20 cursor-pointer">
+                                                            <span class="material-symbols-outlined" style="font-size: 14px;">credit_card</span>
+                                                            Bayar
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                                
+                                                <!-- Step 2 -->
+                                                <div class="flex flex-col items-center w-1/3 text-center">
+                                                    <div class="w-12 h-12 rounded-full {{ $step2Done ? 'bg-[#e1e1c9] text-[#636451] shadow-sm hover:scale-105 transition-transform' : ($step2Active ? 'bg-[#271310] text-white shadow-md pulse-active' : 'bg-[#eee6e5] text-[#504442] border border-[#e8e1df]') }} flex items-center justify-center mb-4 transition-colors">
+                                                        @if($step2Done)
+                                                            <span class="material-symbols-outlined fill">check_circle</span>
+                                                        @else
+                                                            <span class="material-symbols-outlined">coffee_maker</span>
+                                                        @endif
+                                                    </div>
+                                                    <p class="text-sm font-semibold {{ $step2Done || $step2Active ? 'text-[#1e1b1a]' : 'text-[#504442]' }}">Proses Pembuatan</p>
+                                                </div>
+                                                
+                                                <!-- Step 3 -->
+                                                <div class="flex flex-col items-center w-1/3 text-center">
+                                                    <div class="w-12 h-12 rounded-full {{ $isCompleted ? 'bg-[#271310] text-white shadow-md pulse-active hover:scale-105 transition-transform' : 'bg-[#eee6e5] text-[#504442] border border-[#e8e1df]' }} flex items-center justify-center mb-4 transition-colors">
+                                                        <span class="material-symbols-outlined">celebration</span>
+                                                    </div>
+                                                    <p class="text-sm font-semibold {{ $isCompleted ? 'text-[#1e1b1a]' : 'text-[#504442]' }}">Selesai</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    </div>
                                 </div>
 
-                                <!-- Order Again Button -->
-                                <div class="mt-6 flex justify-end">
-                                    <a href="{{ route('cart') }}" 
-                                       class="inline-block bg-[#5C4033] text-white font-serif px-6 py-2 rounded-full hover:bg-[#4a332a] transition duration-300">
-                                        Order Again
-                                    </a>
-                                </div>
-
-                                <!-- Order Info -->
-                                <div class="mt-6 pt-4 border-t border-gray-200 text-sm text-gray-600">
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <span class="font-semibold">Order Number:</span> {{ $order->order_number }}
+                                <!-- Lower Bento Grid: Details & ETA -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                                    <!-- Order Details Card -->
+                                    <div class="md:col-span-2 bg-[#fff8f6] rounded-xl shadow-sm p-6 border border-[#e8e1df]">
+                                        <div class="flex justify-between items-center mb-6 border-b border-[#e8e1df] pb-4">
+                                            <h3 class="text-xl font-semibold text-[#271310]">Order Details</h3>
                                         </div>
-                                        <div>
-                                            <span class="font-semibold">Status:</span> 
-                                            @php
-                                                $statusClasses = [
-                                                    'paid' => 'bg-green-100 text-green-800',
-                                                    'pending' => 'bg-yellow-100 text-yellow-800',
-                                                    'failed' => 'bg-red-100 text-red-800',
-                                                    'cancelled' => 'bg-red-100 text-red-800',
-                                                ];
-                                                $currentClass = $statusClasses[$order->status] ?? 'bg-gray-100 text-gray-800';
-                                            @endphp
-                                            <span class="px-2 py-1 rounded-full text-xs {{ $currentClass }}">
-                                                {{ ucfirst($order->status) }}
-                                            </span>
-                                        </div>
-                                        <div class="col-span-2">
-                                            <span class="font-semibold">Date:</span> {{ $order->created_at->format('d F Y, H:i') }}
-                                        </div>
+                                        <ul class="flex flex-col gap-4">
+                                            @foreach($order->orderItems as $item)
+                                            <li class="flex items-center justify-between p-4 rounded-lg hover:bg-[#faf2f0] transition-colors">
+                                                <div class="flex items-center gap-6">
+                                                    <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                                                        <img src="{{ $item->product->image ? asset('storage/'.$item->product->image) : asset('images/salted-creme-brulee.png') }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover">
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-sm font-semibold text-[#1e1b1a]">{{ $item->quantity }}x {{ $item->product->name }}</p>
+                                                        @if($item->extras && $item->extras->count() > 0)
+                                                            <p class="text-xs font-medium text-[#504442]">Extras: {{ $item->extras->pluck('name')->join(', ') }}</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <span class="text-base font-bold text-[#1e1b1a]">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    
+                                    <!-- Estimated Time Card -->
+                                    <div class="bg-[#3e2723] text-[#ae8d87] rounded-xl shadow-sm p-6 flex flex-col justify-center items-center text-center relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-gradient-to-br from-[#271310]/10 to-transparent"></div>
+                                        
+                                        @if($isCompleted)
+                                            <span class="material-symbols-outlined mb-6 relative z-10" style="font-size: 48px; font-variation-settings: 'wght' 300;">celebration</span>
+                                            <h3 class="text-xl font-semibold mb-2 relative z-10 text-white">Yeay! Selesai</h3>
+                                            <p class="text-lg text-white mb-4 relative z-10">Pesanan Anda Siap Diantar</p>
+                                            <p class="text-sm font-semibold uppercase tracking-wider text-[#e3beb8] relative z-10">Terima Kasih</p>
+                                        @else
+                                            <span class="material-symbols-outlined mb-6 relative z-10" style="font-size: 48px; font-variation-settings: 'wght' 300;">schedule</span>
+                                            <h3 class="text-xl font-semibold mb-2 relative z-10">Estimasi</h3>
+                                            <p class="text-4xl font-bold text-white mb-4 relative z-10">{{ $order->estimated_time }}</p>
+                                            <p class="text-sm font-semibold uppercase tracking-wider text-[#e3beb8] relative z-10">Menit</p>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -211,4 +325,38 @@
             </div>
         </div>
     </footer>
+    <!-- Midtrans Snap Script -->
+    <script>
+        function payOrder(snapToken, orderNumber) {
+            if (!window.snap) {
+                window.showToast('Midtrans Snap tidak dimuat dengan benar. Silakan muat ulang halaman.', 'error');
+                return;
+            }
+
+            window.snap.pay(snapToken, {
+                // Jika pembayaran BERHASIL
+                onSuccess: function(result) {
+                    // Redirect ke route simulasi menggunakan Order Number yang valid
+                    window.location.href = `/payment/simulate/${orderNumber}/settlement`;
+                },
+                
+                // Jika pembayaran PENDING
+                onPending: function(result) {
+                    window.location.reload();
+                },
+                
+                // Jika pembayaran GAGAL
+                onError: function(result) {
+                    window.showToast('Pembayaran gagal.', 'error');
+                    window.location.reload();
+                },
+                
+                // Jika user MENUTUP popup
+                onClose: function() {
+                    console.log('Customer closed the popup');
+                    window.showToast('Pembayaran belum selesai.', 'warning');
+                }
+            });
+        }
+    </script>
 </x-app-layout>

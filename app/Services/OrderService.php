@@ -147,12 +147,18 @@ class OrderService
             ];
 
             // Make request to Midtrans
-            $response = Http::withBasicAuth($serverKey, '')
+            $http = Http::withBasicAuth($serverKey, '')
                 ->withHeaders([
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
-                ])
-                ->post($url, $params);
+                ]);
+
+            // Disable SSL Verification on local/sandbox to avoid cURL Error 60 in Laragon
+            if (!$isProduction) {
+                $http = $http->withoutVerifying();
+            }
+
+            $response = $http->post($url, $params);
 
             if ($response->successful()) {
                 $snapToken = $response->json('token');

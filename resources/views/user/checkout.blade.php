@@ -83,7 +83,7 @@
                 <div class="mt-6 border-t border-gray-200 pt-4">
                     <label for="table_number" class="block text-sm font-medium text-gray-700 mb-1 font-bold">Nomor Meja <span class="text-red-500">*</span></label>
                     <input type="text" id="table_number" name="table_number" required 
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:border-[#5C4033] focus:ring focus:ring-[#5C4033] focus:ring-opacity-50" 
+                           class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:border-[#5C4033] focus:ring focus:ring-[#5C4033] focus:ring-opacity-50 focus:outline-none" 
                            placeholder="Contoh: 12">
                     <p class="text-xs text-gray-500 mt-1">Silakan isi nomor meja tempat Anda duduk.</p>
                 </div>
@@ -128,7 +128,7 @@
             
             const tableNumber = document.getElementById('table_number').value.trim();
             if (!tableNumber) {
-                alert('❌ Silakan isi Nomor Meja terlebih dahulu.');
+                window.showToast('Silakan isi Nomor Meja terlebih dahulu.', 'warning');
                 document.getElementById('table_number').focus();
                 return;
             }
@@ -163,12 +163,12 @@
                     // 3. Buka Popup Midtrans
                     openMidtransPopup(existingSnapToken);
                 } else {
-                    alert('❌ ' + (data.message || 'Gagal memproses pesanan.'));
+                    window.showToast(data.message || 'Gagal memproses pesanan.', 'error');
                     resetButton(btn, originalText);
                 }
             } catch (error) {
                 console.error('Error processing payment:', error);
-                alert('❌ Terjadi kesalahan sistem.');
+                window.showToast('Terjadi kesalahan sistem.', 'error');
                 resetButton(btn, originalText);
             }
         });
@@ -195,7 +195,7 @@
                 
                 // Jika pembayaran GAGAL
                 onError: function(result) {
-                    alert('❌ Pembayaran gagal.');
+                    window.showToast('Pembayaran gagal.', 'error');
                     resetButton(document.getElementById('payButton'), 'Coba Bayar Lagi');
                 },
                 
@@ -207,7 +207,7 @@
                     btn.innerHTML = '<span>Lanjutkan Pembayaran</span>';
                     btn.classList.remove('bg-[#5C4033]', 'hover:bg-[#4a332a]');
                     btn.classList.add('bg-amber-600', 'hover:bg-amber-700');
-                    alert('⚠️ Pembayaran belum selesai. Klik "Lanjutkan Pembayaran" untuk menyelesaikan pesanan Anda.');
+                    window.showToast('Pembayaran belum selesai. Klik "Lanjutkan Pembayaran" untuk menyelesaikan pesanan Anda.', 'warning');
                 }
             });
         }

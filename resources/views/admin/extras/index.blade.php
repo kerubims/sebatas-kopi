@@ -34,6 +34,7 @@
             <thead>
                 <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
                     <th class="px-6 py-3 font-medium">Name</th>
+                    <th class="px-6 py-3 font-medium">Category</th>
                     <th class="px-6 py-3 font-medium">Price</th>
                     <th class="px-6 py-3 font-medium">Status</th>
                     <th class="px-6 py-3 font-medium">Actions</th>
@@ -43,6 +44,13 @@
                 @forelse($extras as $extra)
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4 text-sm text-gray-800 font-medium">{{ $extra->name }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+                            @if($extra->category === 'snack')
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">Snack</span>
+                            @else
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-[#e3beb8] text-[#5C4033]">Coffee</span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-600">Rp {{ number_format($extra->price, 0, ',', '.') }}</td>
                         <td class="px-6 py-4">
                             @if($extra->is_available)
@@ -52,12 +60,16 @@
                             @endif
                         </td>
                         <td class="px-6 py-4">
-                            <div class="flex space-x-2">
-                                <a href="{{ route('admin.extras.edit', $extra) }}" class="text-blue-600 hover:text-blue-800">Edit</a>
-                                <form action="{{ route('admin.extras.destroy', $extra) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                            <div class="flex space-x-3 items-center">
+                                <a href="{{ route('admin.extras.edit', $extra) }}" class="text-blue-600 hover:text-blue-800 transition" title="Edit">
+                                    <span class="material-symbols-outlined text-xl">edit</span>
+                                </a>
+                                <form action="{{ route('admin.extras.destroy', $extra) }}" method="POST" @submit.prevent="window.showConfirm('Apakah Anda yakin ingin menghapus ekstra ini?', () => $el.submit())">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
+                                    <button type="submit" class="text-red-600 hover:text-red-800 transition pt-1" title="Delete">
+                                        <span class="material-symbols-outlined text-xl">delete</span>
+                                    </button>
                                 </form>
                             </div>
                         </td>

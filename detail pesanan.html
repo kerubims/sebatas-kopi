@@ -1,0 +1,534 @@
+<!doctype html>
+<html class="light" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>EspressoFlow - Order Status</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+            rel="stylesheet"
+        />
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "on-primary": "#ffffff",
+                            "on-primary-fixed-variant": "#5b403c",
+                            "tertiary-fixed-dim": "#e1c299",
+                            "surface-container": "#f4eceb",
+                            primary: "#271310",
+                            "on-background": "#1e1b1a",
+                            "secondary-container": "#e1e1c9",
+                            "on-secondary-container": "#636451",
+                            tertiary: "#241500",
+                            "primary-fixed": "#ffdad4",
+                            "on-secondary-fixed": "#1b1d0e",
+                            "inverse-on-surface": "#f7efee",
+                            "primary-container": "#3e2723",
+                            "on-surface-variant": "#504442",
+                            "on-secondary-fixed-variant": "#474836",
+                            "surface-container-low": "#faf2f0",
+                            "primary-fixed-dim": "#e3beb8",
+                            outline: "#827472",
+                            "on-tertiary-fixed-variant": "#584324",
+                            "on-primary-container": "#ae8d87",
+                            "surface-tint": "#745853",
+                            "secondary-fixed-dim": "#c8c8b0",
+                            "on-primary-fixed": "#2b1613",
+                            "secondary-fixed": "#e4e4cc",
+                            "surface-container-high": "#eee6e5",
+                            "tertiary-container": "#3c290c",
+                            "on-tertiary-fixed": "#281801",
+                            "on-surface": "#1e1b1a",
+                            "surface-variant": "#e8e1df",
+                            "on-tertiary": "#ffffff",
+                            "surface-bright": "#fff8f6",
+                            error: "#ba1a1a",
+                            "on-error": "#ffffff",
+                            "surface-dim": "#e0d8d7",
+                            surface: "#fff8f6",
+                            "tertiary-fixed": "#feddb3",
+                            "on-error-container": "#93000a",
+                            "inverse-primary": "#e3beb8",
+                            background: "#fff8f6",
+                            "error-container": "#ffdad6",
+                            secondary: "#5e604d",
+                            "on-secondary": "#ffffff",
+                            "inverse-surface": "#33302f",
+                            "surface-container-lowest": "#ffffff",
+                            "on-tertiary-container": "#ab906a",
+                            "outline-variant": "#d3c3c0",
+                            "surface-container-highest": "#e8e1df",
+                        },
+                        borderRadius: {
+                            DEFAULT: "0.25rem",
+                            lg: "0.5rem",
+                            xl: "0.75rem",
+                            full: "9999px",
+                        },
+                        spacing: {
+                            gutter: "20px",
+                            lg: "40px",
+                            "margin-mobile": "16px",
+                            base: "4px",
+                            xl: "64px",
+                            xs: "8px",
+                            "margin-desktop": "48px",
+                            sm: "16px",
+                            md: "24px",
+                        },
+                        fontFamily: {
+                            "body-lg": ["Inter"],
+                            "display-lg": ["Montserrat"],
+                            "body-md": ["Inter"],
+                            "label-bold": ["Inter"],
+                            "headline-lg-mobile": ["Montserrat"],
+                            "headline-sm": ["Montserrat"],
+                            "label-sm": ["Inter"],
+                            "headline-md": ["Montserrat"],
+                        },
+                        fontSize: {
+                            "body-lg": [
+                                "18px",
+                                {
+                                    lineHeight: "28px",
+                                    fontWeight: "400",
+                                },
+                            ],
+                            "display-lg": [
+                                "40px",
+                                {
+                                    lineHeight: "48px",
+                                    letterSpacing: "-1px",
+                                    fontWeight: "700",
+                                },
+                            ],
+                            "body-md": [
+                                "16px",
+                                {
+                                    lineHeight: "24px",
+                                    fontWeight: "400",
+                                },
+                            ],
+                            "label-bold": [
+                                "14px",
+                                {
+                                    lineHeight: "20px",
+                                    fontWeight: "600",
+                                },
+                            ],
+                            "headline-lg-mobile": [
+                                "32px",
+                                {
+                                    lineHeight: "40px",
+                                    fontWeight: "700",
+                                },
+                            ],
+                            "headline-sm": [
+                                "20px",
+                                {
+                                    lineHeight: "28px",
+                                    fontWeight: "600",
+                                },
+                            ],
+                            "label-sm": [
+                                "12px",
+                                {
+                                    lineHeight: "16px",
+                                    fontWeight: "500",
+                                },
+                            ],
+                            "headline-md": [
+                                "24px",
+                                {
+                                    lineHeight: "32px",
+                                    fontWeight: "600",
+                                },
+                            ],
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            .material-symbols-outlined {
+                font-variation-settings:
+                    "FILL" 0,
+                    "wght" 400,
+                    "GRAD" 0,
+                    "opsz" 24;
+            }
+            .material-symbols-outlined.fill {
+                font-variation-settings:
+                    "FILL" 1,
+                    "wght" 400,
+                    "GRAD" 0,
+                    "opsz" 24;
+            }
+
+            .bg-coffee-pattern {
+                background-color: #fff8f6;
+                background-image: radial-gradient(#e3beb8 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+
+            @keyframes pulse-ring {
+                0% {
+                    transform: scale(0.8);
+                    box-shadow: 0 0 0 0 rgba(62, 39, 35, 0.4);
+                }
+                70% {
+                    transform: scale(1);
+                    box-shadow: 0 0 0 10px rgba(62, 39, 35, 0);
+                }
+                100% {
+                    transform: scale(0.8);
+                    box-shadow: 0 0 0 0 rgba(62, 39, 35, 0);
+                }
+            }
+            .pulse-active {
+                animation: pulse-ring 2s infinite;
+            }
+        </style>
+    </head>
+    <body
+        class="bg-coffee-pattern text-on-surface min-h-screen flex flex-col font-body-md"
+    >
+        <!-- TopAppBar -->
+        <header
+            class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 w-full z-50 bg-surface dark:bg-surface-container shadow-[0_8px_24px_rgba(62,39,35,0.08)] docked full-width top-0"
+        >
+            <div class="flex items-center gap-md">
+                <span
+                    class="font-display-lg text-display-lg text-primary dark:text-primary-fixed"
+                    >EspressoFlow</span
+                >
+            </div>
+            <nav class="hidden md:flex items-center gap-lg">
+                <!-- Suppressed global nav links as this is a transactional page -->
+            </nav>
+            <div class="flex items-center gap-sm">
+                <button
+                    class="w-10 h-10 flex items-center justify-center rounded-full text-primary dark:text-primary-fixed-dim hover:bg-surface-variant/50 transition-colors Active: scale-[0.98] transition-transform duration-200"
+                >
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+                <button
+                    class="w-10 h-10 flex items-center justify-center rounded-full text-primary dark:text-primary-fixed-dim hover:bg-surface-variant/50 transition-colors Active: scale-[0.98] transition-transform duration-200"
+                >
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div
+                    class="w-10 h-10 rounded-full overflow-hidden ml-xs border-2 border-surface-variant"
+                >
+                    <img
+                        alt="User profile photo"
+                        class="w-full h-full object-cover"
+                        data-alt="A close-up, softly lit portrait of a person in a modern, warm cafe environment, representing a user profile photo. The lighting is cozy and the aesthetic matches a premium coffee shop application."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp6GnviL7B7wha5z48Ew7X3XRIeNwIC3elLAEFHtmhbBHST8IG-Cz0Z1nYlOZw67R-hGZe4cNli1FgBMrkM4zODBlcuQFhe1j_iWzlF8v7lhWmpGmamO50DWbtedKIyC2zlNB551avh36jldzedGO1a1YjOYC_4W40oSCQHgmKbQ3o5YxBUkWZcIMEvIM-XAdRuM-XD382WocZzAeHHE4ydp6N-WbYCWvJ35p88464q9i-x1QhcuNq"
+                    />
+                </div>
+            </div>
+        </header>
+        <!-- Main Content -->
+        <main
+            class="flex-grow flex flex-col items-center justify-center py-xl px-margin-mobile md:px-margin-desktop w-full max-w-5xl mx-auto"
+        >
+            <!-- Order Header -->
+            <div class="text-center mb-xl w-full">
+                <div
+                    class="inline-flex items-center justify-center bg-primary-fixed text-on-primary-fixed font-label-bold text-label-bold px-4 py-2 rounded-full mb-sm shadow-sm"
+                >
+                    <span
+                        class="material-symbols-outlined mr-2"
+                        style="font-size: 18px"
+                        >local_cafe</span
+                    >Pesanan sedang diproses
+                </div>
+                <h1 class="font-display-lg text-display-lg text-primary mb-2">
+                    Order #4829
+                </h1>
+                <p class="font-body-lg text-body-lg text-on-surface-variant">
+                    Kami sedang menyiapkan pesanan Anda dengan teliti.
+                </p>
+            </div>
+            <!-- Progress Tracker Bento Card -->
+            <div
+                class="w-full bg-surface rounded-xl shadow-[0_8px_24px_rgba(62,39,35,0.08)] p-md md:p-lg mb-lg border border-surface-variant/50 relative overflow-hidden"
+            >
+                <!-- Decorative background element -->
+                <div
+                    class="absolute -right-20 -top-20 w-64 h-64 bg-primary-fixed-dim/20 rounded-full blur-3xl"
+                ></div>
+                <h2
+                    class="font-headline-md text-headline-md text-primary mb-xl relative z-10"
+                >
+                    Status
+                </h2>
+                <div class="relative z-10">
+                    <!-- Mobile Vertical Tracker (md:hidden) -->
+                    <div class="md:hidden flex flex-col gap-md relative">
+                        <div
+                            class="absolute left-6 top-6 bottom-6 w-0.5 bg-surface-variant"
+                        ></div>
+                        <div class="flex items-center gap-md relative">
+                            <div
+                                class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center z-10 shadow-sm"
+                            >
+                                <span class="material-symbols-outlined fill"
+                                    >check_circle</span
+                                >
+                            </div>
+                            <div>
+                                <p
+                                    class="font-label-bold text-label-bold text-on-surface"
+                                >
+                                    Pembayaran Berhasil
+                                </p>
+                                <p
+                                    class="font-label-sm text-label-sm text-on-surface-variant"
+                                >
+                                    Pembayaran diterima
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-md relative">
+                            <div
+                                class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center z-10 shadow-md pulse-active"
+                            >
+                                <span class="material-symbols-outlined"
+                                    >coffee_maker</span
+                                >
+                            </div>
+                            <div>
+                                <p
+                                    class="font-label-bold text-label-bold text-primary"
+                                >
+                                    Proses Pembuatan
+                                </p>
+                                <p
+                                    class="font-label-sm text-label-sm text-on-surface-variant"
+                                >
+                                    Barista sedang menyeduh
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-md relative">
+                            <div
+                                class="w-12 h-12 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center z-10 border border-surface-variant"
+                            >
+                                <span class="material-symbols-outlined"
+                                    >check_circle</span
+                                >
+                            </div>
+                            <div>
+                                <p
+                                    class="font-label-bold text-label-bold text-on-surface-variant"
+                                >
+                                    Selesai
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Desktop Horizontal Tracker (hidden md:block) -->
+                    <div class="hidden md:block relative w-full">
+                        <div
+                            class="absolute top-6 left-[15%] right-[15%] h-0.5 bg-surface-variant z-0"
+                        ></div>
+                        <div
+                            class="absolute top-6 left-[15%] w-[35%] h-0.5 bg-primary z-0"
+                        ></div>
+                        <div class="flex justify-between w-full relative z-10">
+                            <div
+                                class="flex flex-col items-center w-1/3 text-center"
+                            >
+                                <div
+                                    class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-sm mb-sm transition-transform hover:scale-105"
+                                >
+                                    <span class="material-symbols-outlined fill"
+                                        >check_circle</span
+                                    >
+                                </div>
+                                <p
+                                    class="font-label-bold text-label-bold text-on-surface"
+                                >
+                                    Pembayaran Berhasil
+                                </p>
+                            </div>
+                            <div
+                                class="flex flex-col items-center w-1/3 text-center"
+                            >
+                                <div
+                                    class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md mb-sm pulse-active"
+                                >
+                                    <span class="material-symbols-outlined"
+                                        >coffee_maker</span
+                                    >
+                                </div>
+                                <p
+                                    class="font-label-bold text-label-bold text-primary"
+                                >
+                                    Proses Pembuatan
+                                </p>
+                            </div>
+                            <div
+                                class="flex flex-col items-center w-1/3 text-center"
+                            >
+                                <div
+                                    class="w-12 h-12 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center border border-surface-variant mb-sm transition-colors"
+                                >
+                                    <span class="material-symbols-outlined"
+                                        >check_circle</span
+                                    >
+                                </div>
+                                <p
+                                    class="font-label-bold text-label-bold text-on-surface-variant"
+                                >
+                                    Selesai
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Lower Bento Grid: Details & ETA -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-lg w-full">
+                <!-- Order Details Card (Spans 2 columns on desktop) -->
+                <div
+                    class="md:col-span-2 bg-surface rounded-xl shadow-[0_8px_24px_rgba(62,39,35,0.08)] p-md md:p-lg border border-surface-variant/50"
+                >
+                    <div
+                        class="flex justify-between items-center mb-md border-b border-surface-variant/50 pb-sm"
+                    >
+                        <h3
+                            class="font-headline-sm text-headline-sm text-primary"
+                        >
+                            Order Details
+                        </h3>
+                        <button
+                            class="font-label-bold text-label-bold text-outline hover:text-primary transition-colors"
+                        >
+                            View Receipt
+                        </button>
+                    </div>
+                    <ul class="flex flex-col gap-sm">
+                        <li
+                            class="flex items-center justify-between p-sm rounded-lg hover:bg-surface-container-low transition-colors"
+                        >
+                            <div class="flex items-center gap-md">
+                                <div
+                                    class="w-12 h-12 rounded bg-secondary-container flex items-center justify-center text-on-secondary-container"
+                                >
+                                    <span class="material-symbols-outlined"
+                                        >emoji_food_beverage</span
+                                    >
+                                </div>
+                                <div>
+                                    <p
+                                        class="font-label-bold text-label-bold text-on-surface"
+                                    >
+                                        1x Oat Milk Latte
+                                    </p>
+                                    <p
+                                        class="font-label-sm text-label-sm text-on-surface-variant"
+                                    >
+                                        Extra hot, no foam
+                                    </p>
+                                </div>
+                            </div>
+                            <span
+                                class="font-body-md text-body-md text-on-surface"
+                                >$5.50</span
+                            >
+                        </li>
+                        <li
+                            class="flex items-center justify-between p-sm rounded-lg hover:bg-surface-container-low transition-colors"
+                        >
+                            <div class="flex items-center gap-md">
+                                <div
+                                    class="w-12 h-12 rounded bg-tertiary-container flex items-center justify-center text-on-tertiary-container"
+                                >
+                                    <span class="material-symbols-outlined"
+                                        >bakery_dining</span
+                                    >
+                                </div>
+                                <div>
+                                    <p
+                                        class="font-label-bold text-label-bold text-on-surface"
+                                    >
+                                        1x Almond Croissant
+                                    </p>
+                                    <p
+                                        class="font-label-sm text-label-sm text-on-surface-variant"
+                                    >
+                                        Warmed up
+                                    </p>
+                                </div>
+                            </div>
+                            <span
+                                class="font-body-md text-body-md text-on-surface"
+                                >$4.25</span
+                            >
+                        </li>
+                    </ul>
+                </div>
+                <!-- Estimated Time Card -->
+                <div
+                    class="bg-primary-container text-on-primary-container rounded-xl shadow-[0_8px_24px_rgba(62,39,35,0.08)] p-md md:p-lg flex flex-col justify-center items-center text-center relative overflow-hidden"
+                >
+                    <!-- Soft background glow -->
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"
+                    ></div>
+                    <span
+                        class="material-symbols-outlined mb-md relative z-10"
+                        style="
+                            font-size: 48px;
+                            font-variation-settings: &quot;wght&quot; 300;
+                        "
+                        >schedule</span
+                    >
+                    <h3
+                        class="font-headline-sm text-headline-sm mb-xs relative z-10"
+                    >
+                        Estimasi Pengambilan
+                    </h3>
+                    <p
+                        class="font-display-lg text-display-lg text-on-primary mb-sm relative z-10"
+                    >
+                        5-7
+                    </p>
+                    <p
+                        class="font-label-bold text-label-bold uppercase tracking-wider text-primary-fixed-dim relative z-10"
+                    >
+                        Menit
+                    </p>
+                </div>
+            </div>
+        </main>
+        <!-- Help Footer for Transactional Page -->
+        <footer
+            class="w-full py-md text-center text-on-surface-variant font-label-sm text-label-sm border-t border-surface-variant/30 mt-auto bg-surface-container-low"
+        >
+            <p class="">
+                Need to make a change?
+                <a
+                    class="text-primary font-label-bold underline hover:text-primary-container transition-colors"
+                    href="#"
+                    >Contact Barista</a
+                >
+            </p>
+        </footer>
+    </body>
+</html>

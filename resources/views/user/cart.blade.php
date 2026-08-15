@@ -154,8 +154,10 @@
             return {
                 async updateQuantity(itemKey, newQuantity) {
                     if (newQuantity < 1) {
-                        if (!confirm('Hapus item ini dari keranjang?')) return;
-                        return this.removeItem(itemKey);
+                        window.showConfirm('Hapus item ini dari keranjang?', () => {
+                            this.removeItem(itemKey);
+                        });
+                        return;
                     }
 
                     try {
@@ -174,64 +176,64 @@
                         if (data.success) {
                             location.reload();
                         } else {
-                            alert('Gagal update jumlah item');
+                            window.showToast('Gagal update jumlah item', 'error');
                         }
                     } catch (error) {
                         console.error('Error updating quantity:', error);
-                        alert('Terjadi kesalahan sistem.');
+                        window.showToast('Terjadi kesalahan sistem.', 'error');
                     }
                 },
 
                 async removeItem(itemKey) {
-                    if (!confirm('Yakin ingin menghapus item ini?')) return;
+                    window.showConfirm('Yakin ingin menghapus item ini?', async () => {
+                        try {
+                            const response = await fetch(`/cart/${itemKey}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                },
+                            });
 
-                    try {
-                        const response = await fetch(`/cart/${itemKey}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                            },
-                        });
+                            const data = await response.json();
 
-                        const data = await response.json();
-
-                        if (data.success) {
-                            location.reload();
-                        } else {
-                            alert('Gagal menghapus item');
+                            if (data.success) {
+                                location.reload();
+                            } else {
+                                window.showToast('Gagal menghapus item', 'error');
+                            }
+                        } catch (error) {
+                            console.error('Error removing item:', error);
+                            window.showToast('Terjadi kesalahan sistem.', 'error');
                         }
-                    } catch (error) {
-                        console.error('Error removing item:', error);
-                        alert('Terjadi kesalahan sistem.');
-                    }
+                    });
                 },
 
                 async clearCart() {
-                    if (!confirm('Kosongkan seluruh keranjang?')) return;
+                    window.showConfirm('Kosongkan seluruh keranjang?', async () => {
+                        try {
+                            const response = await fetch('/cart', {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                }
+                            });
 
-                    try {
-                        const response = await fetch('/cart', {
-                            method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            const data = await response.json();
+
+                            if (data.success) {
+                                location.reload();
+                            } else {
+                                window.showToast('Gagal mengosongkan keranjang', 'error');
                             }
-                        });
-
-                        const data = await response.json();
-
-                        if (data.success) {
-                            location.reload();
-                        } else {
-                            alert('Gagal mengosongkan keranjang');
+                        } catch (error) {
+                            console.error('Error clearing cart:', error);
+                            window.showToast('Terjadi kesalahan sistem.', 'error');
                         }
-                    } catch (error) {
-                        console.error('Error clearing cart:', error);
-                        alert('Terjadi kesalahan sistem.');
-                    }
+                    });
                 },
 
                 // FUNGSI CHECKOUT YANG DIPERBAIKI
@@ -253,11 +255,11 @@
                             // Redirect ke halaman review (bukan checkout ID order lagi)
                             window.location.href = data.redirect_url;
                         } else {
-                            alert('❌ ' + (data.message || 'Gagal memproses checkout.'));
+                            window.showToast(data.message || 'Gagal memproses checkout.', 'error');
                         }
                     } catch (error) {
                         console.error('Error during checkout:', error);
-                        alert('❌ Terjadi kesalahan sistem. Pastikan route web.php sudah diupdate.');
+                        window.showToast('Terjadi kesalahan sistem. Pastikan route web.php sudah diupdate.', 'error');
                     }
                 }
             }

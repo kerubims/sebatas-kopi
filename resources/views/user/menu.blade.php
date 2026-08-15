@@ -300,7 +300,7 @@
 
                         if (response.ok && data.success) {
                             // Show success message
-                            alert('✅ Produk berhasil ditambahkan ke cart!');
+                            window.showToast('Produk berhasil ditambahkan ke cart!', 'success');
                             this.closeModal();
                         } else {
                             console.error('Server response:', data);
@@ -313,14 +313,14 @@
                                 } else {
                                     errorMessage += data.message || 'Validation error';
                                 }
-                                alert(errorMessage);
+                                window.showToast(errorMessage, 'error');
                             } else {
-                                alert('❌ ' + (data.message || 'Gagal menambahkan ke cart. Silakan coba lagi.'));
+                                window.showToast(data.message || 'Gagal menambahkan ke cart. Silakan coba lagi.', 'error');
                             }
                         }
                     } catch (error) {
                         console.error('Error adding to cart:', error);
-                        alert('❌ Terjadi kesalahan sistem. Silakan coba lagi.');
+                        window.showToast('Terjadi kesalahan sistem. Silakan coba lagi.', 'error');
                     }
                 },
 
@@ -362,14 +362,14 @@
                                 } else {
                                     errorMessage += data.message || 'Validation error';
                                 }
-                                alert(errorMessage);
+                                window.showToast(errorMessage, 'error');
                             } else {
-                                alert('❌ ' + (data.message || 'Gagal checkout. Silakan coba lagi.'));
+                                window.showToast(data.message || 'Gagal checkout. Silakan coba lagi.', 'error');
                             }
                         }
                     } catch (error) {
                         console.error('Error in buy now:', error);
-                        alert('❌ Terjadi kesalahan sistem. Silakan coba lagi.');
+                        window.showToast('Terjadi kesalahan sistem. Silakan coba lagi.', 'error');
                     }
                 }
             }

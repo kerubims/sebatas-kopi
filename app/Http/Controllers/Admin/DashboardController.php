@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $totalOrders = Order::count();
         $totalRevenue = Order::where('status', 'paid')->sum('total_price');
         $totalUsers = User::where('role', 'customer')->count();
-        $recentOrders = Order::with('user')->latest()->take(5)->get();
+        $recentOrders = Order::latest()->take(5)->get();
 
         return view('admin.dashboard', compact('totalOrders', 'totalRevenue', 'totalUsers', 'recentOrders'));
     }

@@ -69,52 +69,47 @@
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <h3 class="font-bold text-gray-800 mb-4">Customer Information</h3>
                 <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 rounded-full bg-[#5C4033] flex items-center justify-center text-white font-bold">
-                        {{ substr($order->user->name, 0, 1) }}
+                    <div class="h-12 w-12 rounded-full bg-[#f3e9dc] text-[#5C4033] flex items-center justify-center font-bold text-xl">
+                        {{ substr($order->table_number, 0, 1) }}
                     </div>
                     <div>
-                        <p class="font-medium text-gray-800">{{ $order->user->name }}</p>
-                        <p class="text-sm text-gray-500">{{ $order->user->email }}</p>
+                        <p class="font-medium text-gray-800">Guest (Meja {{ $order->table_number }})</p>                        
                     </div>
                 </div>
-                @if($order->user->phone)
-                    <div class="text-sm text-gray-600">
-                        <span class="font-medium">Phone:</span> {{ $order->user->phone }}
-                    </div>
-                @endif
             </div>
 
             <!-- Update Status -->
-            <!-- <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="font-bold text-gray-800 mb-4">Update Status</h3>
-                <form action="{{ route('admin.orders.update', $order) }}" method="POST" class="space-y-4">
-                    @csrf
-                    @method('PUT')
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-bold text-gray-800 mb-4">Aksi Pesanan</h3>
+                
+                <div class="space-y-3">
+                    <!-- Tombol Proses -->
+                    <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="processing">
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 {{ $order->status === 'paid' ? 'bg-[#5C4033] text-white hover:bg-[#4a332a] shadow-md' : 'bg-gray-100 text-gray-400 cursor-not-allowed' }}" {{ $order->status === 'paid' ? '' : 'disabled' }}>
+                            <span class="material-symbols-outlined">coffee_maker</span>
+                            Proses Pesanan
+                        </button>
+                    </form>
 
-                    <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
-                        <select name="status" id="status" class="w-full rounded-lg border-gray-300 focus:border-[#5C4033] focus:ring focus:ring-[#5C4033] focus:ring-opacity-50">
-                            <option value="unpaid" {{ $order->status === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                            <option value="paid" {{ $order->status === 'paid' ? 'selected' : '' }}>Paid</option>
-                            <option value="failed" {{ $order->status === 'failed' ? 'selected' : '' }}>Failed</option>
-                            <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="payment_status" class="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
-                        <select name="payment_status" id="payment_status" class="w-full rounded-lg border-gray-300 focus:border-[#5C4033] focus:ring focus:ring-[#5C4033] focus:ring-opacity-50">
-                            <option value="unpaid" {{ $order->status === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                            <option value="paid" {{ $order->status === 'paid' ? 'selected' : '' }}>Paid</option>
-                            <option value="failed" {{ $order->status === 'failed' ? 'selected' : '' }}>Failed</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="w-full bg-[#5C4033] text-white py-2 rounded-lg hover:bg-[#4a332a] transition">
-                        Update Order
-                    </button>
-                </form>
-            </div> -->
+                    <!-- Tombol Selesai -->
+                    <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="completed">
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 {{ $order->status === 'processing' ? 'bg-green-600 text-white hover:bg-green-700 shadow-md' : 'bg-gray-100 text-gray-400 cursor-not-allowed' }}" {{ $order->status === 'processing' ? '' : 'disabled' }}>
+                            <span class="material-symbols-outlined">check_circle</span>
+                            Pesanan Selesai
+                        </button>
+                    </form>
+                </div>
+                
+                <p class="text-xs text-gray-500 mt-4 text-center">
+                    Status Saat Ini: <span class="font-semibold text-gray-700 uppercase tracking-wide">{{ $order->status }}</span>
+                </p>
+            </div>
         </div>
     </div>
 </x-admin-layout>

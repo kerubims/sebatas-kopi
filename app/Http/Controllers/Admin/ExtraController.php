@@ -32,12 +32,14 @@ class ExtraController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:extras',
             'price' => 'required|numeric|min:0',
+            'category' => 'required|string|in:coffee,snack,Coffee,Snack',
             'is_available' => 'boolean',
         ]);
 
         Extra::create([
             'name' => $request->name,
             'price' => $request->price,
+            'category' => strtolower($request->category),
             'is_available' => $request->has('is_available'),
         ]);
 
@@ -54,12 +56,14 @@ class ExtraController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:extras,name,' . $extra->id,
             'price' => 'required|numeric|min:0',
+            'category' => 'required|string|in:coffee,snack,Coffee,Snack',
             'is_available' => 'boolean',
         ]);
 
         $extra->update([
             'name' => $request->name,
             'price' => $request->price,
+            'category' => strtolower($request->category),
             'is_available' => $request->has('is_available'),
         ]);
 

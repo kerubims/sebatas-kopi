@@ -64,12 +64,16 @@
                             @endif
                         </td>
                         <td class="px-6 py-4">
-                            <div class="flex space-x-2">
-                                <a href="{{ route('admin.products.edit', $product) }}" class="text-blue-600 hover:text-blue-800">Edit</a>
-                                <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                            <div class="flex space-x-3 items-center">
+                                <a href="{{ route('admin.products.edit', $product) }}" class="text-blue-600 hover:text-blue-800 transition" title="Edit">
+                                    <span class="material-symbols-outlined text-xl">edit</span>
+                                </a>
+                                <form action="{{ route('admin.products.destroy', $product) }}" method="POST" @submit.prevent="window.showConfirm('Apakah Anda yakin ingin menghapus produk ini?', () => $el.submit())">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
+                                    <button type="submit" class="text-red-600 hover:text-red-800 transition pt-1" title="Delete">
+                                        <span class="material-symbols-outlined text-xl">delete</span>
+                                    </button>
                                 </form>
                             </div>
                         </td>

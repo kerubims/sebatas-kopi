@@ -340,7 +340,7 @@ class OrderController extends Controller
         // 7. Feedback ke Browser
         // Kita cek status code dari response JSON milik callback()
         if ($response->getStatusCode() == 200) {
-            return redirect()->route('checkout.success', $orderNumber);
+            return redirect()->route('history')->with('success', 'Pembayaran berhasil dikonfirmasi.');
         } else {
             // Jika gagal (misal 403 Invalid Signature), tampilkan errornya
             $content = json_decode($response->getContent());
